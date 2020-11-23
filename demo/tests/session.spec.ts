@@ -1,6 +1,5 @@
-// / <reference path="./supertest-session.d.ts" />
-
-import requestSession from 'supertest-session';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const request = require('supertest-session');
 import app from '../app';
 import initUsers from './init-users';
 
@@ -8,7 +7,7 @@ describe('Session', () => {
   let session: any;
 
   before(() => {
-    session = requestSession(app);
+    session = request(app);
     return initUsers();
   });
 
