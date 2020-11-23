@@ -7,7 +7,7 @@ const app = express();
 export default app;
 
 const [authMiddleware, authRouter] = useAuth({
-  secret: process.env.SECRET!,
+  secret: 'SUPER-SECRET',
   sendCode,
   delay: 0,
 });
