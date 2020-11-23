@@ -6,21 +6,14 @@ node_js: lts/*
 script:
   - npm run quality:check
   - NODE_ENV=production npm run build
+  - npm test
 
 deploy:
   - provider: npm
     on:
       branch: main
       tags: true
-      repo: tylergrinn/tygr-logo
+      repo: tylergrinn/tygr-auth-server
     edge: true
     email: tylergrinn@gmail.com
     api_token: $NPM_TOKEN
-
-  - provider: pages
-    on:
-      branch: main
-      repo: tylergrinn/tygr-logo
-    edge: true
-    github_token: $GITHUB_TOKEN
-    local_dir: dist

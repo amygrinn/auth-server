@@ -1,72 +1,66 @@
 {
-  "name": "@tygr/logo",
-  "version": "3.0.0",
-  "description": "Logo for tygr",
+  "name": "@tygr/auth-server",
+  "version": "0.0.0",
+  "description": "Authentication middleware for tygr",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib",
-    "sass"
+    "lib"
   ],
-  "browserslist": [
-    "defaults"
-  ],
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react",
-      "@babel/preset-typescript"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime"
-    ]
-  },
   "eslintConfig": {
     "extends": [
       "alloy",
-      "alloy/react",
       "alloy/typescript"
     ],
+    "plugins": [
+      "chai-friendly"
+    ],
     "env": {
-      "browser": true
-    },
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
+      "node": true,
+      "mocha": true
     },
     "rules": {
       "eol-last": [
         "error",
         "always"
-      ]
+      ],
+      "max-params": [
+        "error",
+        4
+      ],
+      "@typescript-eslint/no-unused-expressions": 0
     },
     "ignorePatterns": [
-      "lib/*",
-      "dist/*",
-      "webpack.config.js",
-      "html-webpack-exclude-tags-plugin.js"
+      "lib/*"
     ]
   },
   "prettier": {
     "singleQuote": true
   },
+  "nodemonConfig": {
+    "watch": [
+      "demo",
+      "lib"
+    ],
+    "ext": "ts,js",
+    "exec": "npm run serve",
+    "delay": 1
+  },
+  "mocha": {
+    "spec": "demo/tests/**/*.spec.ts",
+    "require": [
+      "ts-node/register",
+      "dotenv/config"
+    ]
+  },
   "scripts": {
-    "clean": "rimraf lib dist",
-    "ts": "tsc",
-    "ts:w": "npm run ts -- -w",
-    "sass": "sass -I node_modules --style=compressed --no-source-map sass/index.scss lib/tygr-logo.min.css",
-    "sass:w": "npm run sass -- --watch",
-    "webpack": "webpack",
-    "webpack:w": "npm run webpack -- -w",
-    "plugin": "run-p ts sass webpack",
-    "plugin:w": "run-p ts:w sass:w webpack:w",
-    "demo": "webpack --config demo/webpack.config",
-    "demo:w": "npm run demo -- -w",
-    "build": "run-s clean plugin demo",
-    "serve": "http-server dist",
-    "reload": "reload -d dist -b",
-    "start": "npm-run-all build -p plugin:w demo:w reload",
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "build:w": "npm run build -- -w",
+    "serve": "ts-node -r dotenv/config demo",
+    "serve:w": "nodemon",
+    "start": "npm-run-all build -p build:w serve:w",
+    "test": "mocha",
     "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "lint": "npm run lint:fix",
@@ -79,54 +73,56 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tylergrinn/tygr-logo.git"
+    "url": "https://github.com/tylergrinn/tygr-auth-server.git"
   },
   "keywords": [
-    "react",
+    "express",
     "login",
-    "webpack"
+    "passport"
   ],
   "author": "Tyler Grinn",
   "license": "ISC",
   "peerDependencies": {
-    "react": "17"
+    "express": "4"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express-session": "^1.17.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-transform-runtime": "^7.12.1",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-react": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@babel/runtime": "^7.12.5",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.9",
+    "@types/bcrypt": "^3.0.0",
+    "@types/chai": "^4.2.14",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.9",
+    "@types/express-session": "^1.17.3",
+    "@types/mocha": "^8.0.4",
+    "@types/passport": "^1.0.4",
+    "@types/passport-local": "^1.0.33",
+    "@types/supertest": "^2.0.10",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
-    "copy-webpack-plugin": "^6.2.1",
-    "copyfiles": "^2.4.0",
-    "css-loader": "^4.3.0",
+    "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
     "eslint": "^7.9.0",
     "eslint-config-alloy": "^3.8.0",
-    "eslint-plugin-react": "^7.21.2",
-    "html-webpack-plugin": "^4.5.0",
-    "jsdom": "^16.4.0",
-    "mini-css-extract-plugin": "^0.11.2",
+    "eslint-plugin-chai-friendly": "^0.6.0",
+    "express": "^4.17.1",
+    "mocha": "^8.1.3",
     "nodemon": "^2.0.4",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "prettier-plugin-organize-imports": "^1.1.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "reload": "^3.1.1",
     "rimraf": "^3.0.2",
-    "sass": "^1.26.11",
-    "sass-loader": "^10.0.2",
-    "style-loader": "^1.2.1",
+    "supertest": "^4.0.2",
+    "supertest-session": "^4.1.0",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.3",
-    "webpack": "^5.4.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-merge": "^5.1.4"
+    "uuid": "^8.3.1"
   }
 }
