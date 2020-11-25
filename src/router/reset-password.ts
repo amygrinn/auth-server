@@ -1,45 +1,32 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { Router } from 'express';
-import { Store } from 'express-session';
+import { Request, Response, Router } from 'express';
 import BaseUsers from '../users';
+
+declare module 'express-session' {
+  interface SessionData {
+    reset: {
+      email: string;
+      code: string;
+      expires: string;
+    };
+  }
+}
 
 interface ResetPasswordRouterOptions {
   sendCode: (email: string, code: string) => Promise<any>;
-  store: Store;
   Users: BaseUsers;
 }
 
+// Send non-descript messages for all events
+const ERR = (res: Response) => res.status(400).json({ error: 'Bad request' });
+const SUCCESS = (res: Response) => res.json({ success: true });
+
 export default function resetPasswordRouter({
   sendCode,
-  store,
   Users,
 }: ResetPasswordRouterOptions) {
   const router = Router();
-
-  const setStoreValue = (key: string, value: any) =>
-    new Promise((resolve, reject) => {
-      store.set(key, value, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-  const getStoreValue = <T = any>(key: string) =>
-    new Promise<T | null>((resolve, reject) => {
-      store.get(key, (err, value) => {
-        if (err) reject(err);
-        else resolve((value as unknown) as T);
-      });
-    });
-
-  const destroyStoreKey = (key: string) =>
-    new Promise((resolve, reject) => {
-      store.destroy(key, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
 
   router.post('/', async (req, res) => {
     const {
@@ -47,12 +34,11 @@ export default function resetPasswordRouter({
     } = req;
 
     if (!email) {
-      return res.status(400).json({ error: 'Bad request' });
+      return ERR(res);
     }
 
     const user = await Users.findByEmail(email);
-    if (!user)
-      return res.status(400).json({ error: 'Email is not registered' });
+    if (!user) return ERR(res);
 
     const expires = new Date();
     expires.setHours(expires.getHours() + 3);
@@ -63,27 +49,17 @@ export default function resetPasswordRouter({
       .toUpperCase()
       .replace(/(.{4})(.{4})/, '$1-$2');
 
-    await setStoreValue(code, { email, expires: expires.toUTCString() });
+    req.session.reset = { email, code, expires: expires.toUTCString() };
+
     await sendCode(email, code);
-    return res.json({ sucess: true });
+    return SUCCESS(res);
   });
 
-  const authenticate = async (
-    email: string,
-    code: string
-  ): Promise<boolean> => {
-    const storeValue = await getStoreValue(code);
-
-    if (
-      storeValue &&
-      email === storeValue.email &&
-      Date.parse(storeValue.expires) >= Date.now()
-    ) {
-      return true;
-    }
-
-    return false;
-  };
+  const authenticate = (req: Request, email: string, code: string) =>
+    !!req.session.reset &&
+    req.session.reset.email === email &&
+    req.session.reset.code === code &&
+    Date.parse(req.session.reset.expires) >= Date.now();
 
   router.get('/verify', async (req, res) => {
     const {
@@ -96,11 +72,11 @@ export default function resetPasswordRouter({
       typeof email !== 'string' ||
       typeof code !== 'string'
     )
-      return res.status(400).json({ error: 'Bad request' });
+      return ERR(res);
 
-    if (await authenticate(email, code)) return res.json({ success: true });
+    if (authenticate(req, email, code)) return SUCCESS(res);
 
-    return res.status(401).json({ error: 'Invalid code' });
+    return ERR(res);
   });
 
   router.post('/reset', async (req, res) => {
@@ -109,22 +85,21 @@ export default function resetPasswordRouter({
     } = req;
 
     const user = await Users.findByEmail(email);
-    if (!user) return res.status(400).json({ error: 'Email not registered' });
+    if (!user) return ERR(res);
 
-    if (!email || !code || !password)
-      return res.status(400).json({ error: 'Bad request' });
+    if (!email || !code || !password) return ERR(res);
 
-    if (await authenticate(email, code)) {
+    if (authenticate(req, email, code)) {
       const hash = await bcrypt.hash(password, 10);
       user.password = hash;
-      await Users.update(user);
+      user.provider = 'local';
+      await Users.findAndUpdate(user);
+      req.session.reset = undefined;
 
-      await destroyStoreKey(code);
-
-      return res.json({ success: true });
+      return SUCCESS(res);
     }
 
-    return res.status(401).json({ error: 'Invalid code' });
+    return ERR(res);
   });
 
   return router;

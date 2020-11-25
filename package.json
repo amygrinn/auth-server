@@ -1,6 +1,6 @@
 {
   "name": "@tygr/auth-server",
-  "version": "0.0.0",
+  "version": "0.0.3-beta",
   "description": "Authentication middleware for tygr",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -60,7 +60,7 @@
     "serve": "ts-node -r dotenv/config demo",
     "serve:w": "nodemon",
     "start": "npm-run-all build -p build:w serve:w",
-    "test": "mocha",
+    "test": "cross-env NODE_ENV=test mocha",
     "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "lint": "npm run lint:fix",
@@ -86,12 +86,17 @@
     "express": "4"
   },
   "dependencies": {
+    "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "express-session": "^1.17.1",
+    "oauth-1.0a": "^2.2.6",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0"
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -101,13 +106,17 @@
     "@types/express-session": "^1.17.3",
     "@types/mocha": "^8.0.4",
     "@types/passport": "^1.0.4",
+    "@types/passport-github2": "^1.2.4",
+    "@types/passport-google-oauth": "^1.0.41",
     "@types/passport-local": "^1.0.33",
+    "@types/passport-twitter": "^1.0.36",
     "@types/supertest": "^2.0.10",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "eslint": "^7.9.0",
     "eslint-config-alloy": "^3.8.0",

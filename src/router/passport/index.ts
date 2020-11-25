@@ -1,23 +1,43 @@
 import passport from 'passport';
-import BaseUsers from '../../users';
+import type { RouterOptions } from '../';
+import github from './github';
+import google from './google';
 import login from './login';
 import register from './register';
+import twitter from './twitter';
 
-interface PassportInitOptions {
-  Users: BaseUsers;
-}
+export type Strategy =
+  | 'register-local'
+  | 'login-local'
+  | 'google'
+  | 'twitter'
+  | 'github';
 
-export type Strategy = 'register-local' | 'login-local';
+export default function init(options: RouterOptions) {
+  const { Users } = options;
 
-export default function init({ Users }: PassportInitOptions) {
-  passport.serializeUser<{ id: string }, string>((user, done) => {
-    done(null, user.id);
+  passport.serializeUser<{ email: string }, string>((user, done) => {
+    done(null, user.email);
   });
 
-  passport.deserializeUser<{ id: string }, string>((id: string, done) => {
-    Users.findById(id).then((user) => done(null, user));
+  passport.deserializeUser<{ email: string }, string>((email: string, done) => {
+    Users.findByEmail(email).then((user) => done(null, user || undefined));
   });
 
-  passport.use('register-local', register(Users));
-  passport.use('login-local', login(Users));
+  passport.use('register-local', register(options));
+  passport.use('login-local', login(options));
+
+  if (options.authBaseUrl) {
+    if (options.google) {
+      passport.use('google', google(options as any));
+    }
+
+    if (options.github) {
+      passport.use('github', github(options as any));
+    }
+
+    if (options.twitter) {
+      passport.use('twitter', twitter(options as any));
+    }
+  }
 }

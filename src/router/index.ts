@@ -5,15 +5,40 @@ import type BaseUsers from '../users';
 import initPassport, { Strategy } from './passport';
 import resetPasswordRouter from './reset-password';
 
-interface RouterOptions {
+declare module 'express-session' {
+  interface SessionData {
+    originalUrl: string;
+  }
+}
+
+export interface RouterOptions {
   Users: BaseUsers;
   sendCode: (email: string, code: string) => Promise<any>;
   store: Store;
   delay: number;
+  authBaseUrl?: string;
+  google?: {
+    clientID: string;
+    clientSecret: string;
+    scope?: string[];
+  };
+  twitter?: {
+    consumerKey: string;
+    consumerSecret: string;
+  };
+  github?: {
+    clientID: string;
+    clientSecret: string;
+    scope?: string[];
+  };
 }
 
-const authenticate = (strategy: Strategy): Handler => (req, res, next) => {
-  passport.authenticate(strategy, (err, user, info) => {
+const authenticate = (strategy: Strategy, options = {}): Handler => (
+  req,
+  res,
+  next
+) => {
+  passport.authenticate(strategy, options, (err, user, info) => {
     if (err) return next(err);
     if (!user)
       return res
@@ -23,8 +48,9 @@ const authenticate = (strategy: Strategy): Handler => (req, res, next) => {
   })(req, res, next);
 };
 
-export default ({ Users, store, sendCode, delay }: RouterOptions) => {
-  initPassport({ Users });
+export default (options: RouterOptions) => {
+  const { Users, delay } = options;
+  initPassport(options);
 
   const authRouter = Router();
 
@@ -49,14 +75,54 @@ export default ({ Users, store, sendCode, delay }: RouterOptions) => {
     return res.json({ success: true });
   });
 
-  authRouter.use(
-    '/reset-password',
-    resetPasswordRouter({ sendCode, store, Users })
-  );
+  authRouter.use('/reset-password', resetPasswordRouter(options));
+
+  if (options.google) {
+    const scope = ['email'].concat(options.google.scope || []);
+    authRouter.get('/google', (req, res, next) => {
+      authenticate('google', {
+        scope,
+        state: req.get('referer'),
+      })(req, res, next);
+    });
+
+    authRouter.get('/google/callback', authenticate('google'), (req, res) =>
+      res.redirect(req.query.state as string)
+    );
+  }
+
+  if (options.github) {
+    const scope = ['user:email'].concat(options.github.scope || []);
+    authRouter.get('/github', (req, res, next) => {
+      authenticate('github', {
+        scope,
+        state: req.get('referer'),
+      })(req, res, next);
+    });
+
+    authRouter.get('/github/callback', authenticate('github'), (req, res) =>
+      res.redirect(req.query.state as string)
+    );
+  }
+
+  if (options.twitter) {
+    authRouter.get(
+      '/twitter',
+      (req, _res, next) => {
+        req.session.originalUrl = req.get('referer');
+        req.session.save(next);
+      },
+      authenticate('twitter')
+    );
+
+    authRouter.get('/twitter/callback', authenticate('twitter'), (req, res) =>
+      res.redirect(req.session.originalUrl as string)
+    );
+  }
 
   authRouter.route('/user').delete(async (req, res) => {
     if (!req.user) return res.status(401).json({ error: 'Not logged in' });
-    await Users.delete(req.user as any);
+    await Users.findAndDestroy(req.user as any);
     req.logout();
     return res.json({ success: true });
   });

@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { v4 as id } from 'uuid';
-import BaseUsers from '../../users';
+import { RouterOptions } from '..';
 
-export default (Users: BaseUsers) =>
+export default ({ Users }: RouterOptions) =>
   new LocalStrategy(
     { usernameField: 'email' },
     async (email, password, done) => {
@@ -15,6 +15,7 @@ export default (Users: BaseUsers) =>
           id: id(),
           email: email,
           password: hash,
+          provider: 'local',
         });
         done(null, user);
       }

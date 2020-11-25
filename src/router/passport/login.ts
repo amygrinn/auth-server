@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Strategy as LocalStrategy } from 'passport-local';
-import BaseUsers from '../../users';
+import { RouterOptions } from '../';
 
-export default (Users: BaseUsers) =>
+export default ({ Users }: RouterOptions) =>
   new LocalStrategy(
     { usernameField: 'email' },
     async (email, password, done) => {
@@ -10,6 +10,8 @@ export default (Users: BaseUsers) =>
 
       if (!user) {
         done(null, false, { message: 'User does not exist' });
+      } else if (!user.password) {
+        done(null, false, { message: 'User is not registered locally' });
       } else if (!(await bcrypt.compare(password, user.password))) {
         done(null, false, { message: 'Incorrect password' });
       } else {

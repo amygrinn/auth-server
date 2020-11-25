@@ -12,6 +12,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "allowJs": true,
     "types": ["node", "mocha"]

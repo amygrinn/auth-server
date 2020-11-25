@@ -3,7 +3,7 @@ import { Handler } from 'express';
 import session, { Store } from 'express-session';
 import passport from 'passport';
 
-const compose = (...handlers: Handler[]) => {
+const compose = (...handlers: Handler[]): Handler => {
   let head = handlers[0];
   let tail = handlers.slice(1);
 
@@ -15,12 +15,12 @@ const compose = (...handlers: Handler[]) => {
   }) as Handler;
 };
 
-interface InitOptions {
+export interface MiddlewareOptions {
   secret: string | string[];
   store: Store;
 }
 
-const middleware: (options: InitOptions) => Handler = ({ secret, store }) =>
+export default ({ secret, store }: MiddlewareOptions) =>
   compose(
     cookieParser(secret),
     session({
@@ -30,9 +30,14 @@ const middleware: (options: InitOptions) => Handler = ({ secret, store }) =>
       saveUninitialized: false,
       rolling: true,
       name: 'sid',
+      cookie:
+        process.env.NODE_ENV === 'test'
+          ? {}
+          : {
+              sameSite: 'none',
+              secure: true,
+            },
     }),
     passport.initialize(),
-    passport.session()
+    passport.session({ pauseStream: true })
   );
-
-export default middleware;

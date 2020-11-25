@@ -5,7 +5,7 @@ node_js: lts/*
 
 script:
   - npm run quality:check
-  - NODE_ENV=production npm run build
+  - npm run build
   - npm test
 
 deploy:
