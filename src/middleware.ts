@@ -29,6 +29,7 @@ export default ({ secret, store }: MiddlewareOptions) =>
       resave: false,
       saveUninitialized: false,
       rolling: true,
+      proxy: true,
       name: 'sid',
       cookie:
         process.env.NODE_ENV === 'test'
