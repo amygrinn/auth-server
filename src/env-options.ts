@@ -1,5 +1,5 @@
 const {
-  SECRET,
+  AUTH_SECRET,
   AUTH_DELAY,
   CORS,
   AUTH_BASE_URL,
@@ -14,7 +14,7 @@ const {
 } = process.env;
 
 export default {
-  ...(SECRET ? { secret: SECRET.split(',') } : {}),
+  ...(AUTH_SECRET ? { secret: AUTH_SECRET.split(',') } : {}),
   ...(AUTH_DELAY ? { delay: Number(AUTH_DELAY) } : {}),
   ...(CORS ? { cors: !!CORS } : {}),
   ...(AUTH_BASE_URL ? { authBaseUrl: AUTH_BASE_URL } : {}),
