@@ -82,7 +82,7 @@ export default (options: RouterOptions) => {
     authRouter.get('/google', (req, res, next) => {
       authenticate('google', {
         scope,
-        state: req.get('referer'),
+        state: req.query.redirect,
       })(req, res, next);
     });
 
@@ -96,7 +96,7 @@ export default (options: RouterOptions) => {
     authRouter.get('/github', (req, res, next) => {
       authenticate('github', {
         scope,
-        state: req.get('referer'),
+        state: req.query.redirect,
       })(req, res, next);
     });
 
@@ -109,7 +109,7 @@ export default (options: RouterOptions) => {
     authRouter.get(
       '/twitter',
       (req, _res, next) => {
-        req.session.originalUrl = req.get('referer');
+        req.session.originalUrl = req.query.redirect as string;
         req.session.save(next);
       },
       authenticate('twitter')

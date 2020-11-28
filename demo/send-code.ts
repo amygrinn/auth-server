@@ -7,7 +7,7 @@ export let currentCode: string;
  * or twilio or whatever.
  *
  * In this example, the last-requested code is set to the exported
- * variable 'currentCode' to tbe used for testing
+ * variable 'currentCode' to be used for testing
  */
 export default function sendCode(_email: string, code: string) {
   currentCode = code;

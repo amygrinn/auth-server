@@ -1,5 +1,6 @@
 import { MemoryStore } from 'express-session';
 import cors from './cors';
+import envOptions from './env-options';
 import MemoryUsers from './memory-users';
 import middleware, { MiddlewareOptions } from './middleware';
 import router, { RouterOptions } from './router';
@@ -16,15 +17,19 @@ type WithDefaults<Options, Defaults extends Partial<Options>> = Omit<
 const defaultOptions = {
   Users: MemoryUsers,
   store: new MemoryStore(),
-  delay: 1000,
+  delay: 0,
 };
 
 type AuthOptions = WithDefaults<
   MiddlewareOptions & RouterOptions,
-  typeof defaultOptions
+  typeof defaultOptions & typeof envOptions
 >;
 
-export default function useAuth(o: AuthOptions) {
-  const options = { ...defaultOptions, ...o };
-  return [middleware(options), router(options)];
+export default function useAuth(authOptions: AuthOptions) {
+  const options = { ...defaultOptions, ...authOptions, ...envOptions };
+  if (!options.secret)
+    throw new Error(
+      'Auth requires the secret option to be set either in the options or the `AUTH_SECRET` environment variable'
+    );
+  return [middleware(options as MiddlewareOptions), router(options)];
 }

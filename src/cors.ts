@@ -1,6 +1,7 @@
 import { Handler } from 'express';
 
 export default function (...whitelist: string[]): Handler {
+  if (process.env.CORS) whitelist.push(...process.env.CORS.split(','));
   return (req, res, next) => {
     const origin = req.get('origin');
     if (origin && whitelist.includes(origin)) {

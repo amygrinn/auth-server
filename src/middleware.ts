@@ -18,9 +18,12 @@ const compose = (...handlers: Handler[]): Handler => {
 export interface MiddlewareOptions {
   secret: string | string[];
   store: Store;
+  cors?: boolean;
 }
 
-export default ({ secret, store }: MiddlewareOptions) =>
+const TEST = process.env.NODE_ENV === 'test';
+
+export default ({ secret, store, cors }: MiddlewareOptions) =>
   compose(
     cookieParser(secret),
     session({
@@ -29,15 +32,15 @@ export default ({ secret, store }: MiddlewareOptions) =>
       resave: false,
       saveUninitialized: false,
       rolling: true,
-      proxy: true,
+      proxy: cors,
       name: 'sid',
       cookie:
-        process.env.NODE_ENV === 'test'
-          ? {}
-          : {
+        cors && !TEST
+          ? {
               sameSite: 'none',
               secure: true,
-            },
+            }
+          : {},
     }),
     passport.initialize(),
     passport.session({ pauseStream: true })

@@ -1,6 +1,6 @@
 {
   "name": "@tygr/auth-server",
-  "version": "0.0.4-beta",
+  "version": "1.0.0",
   "description": "Authentication middleware for tygr",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -96,7 +96,8 @@
     "passport-github2": "^0.1.12",
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
-    "passport-twitter": "^1.0.4"
+    "passport-twitter": "^1.0.4",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -131,7 +132,6 @@
     "supertest": "^4.0.2",
     "supertest-session": "^4.1.0",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.3",
-    "uuid": "^8.3.1"
+    "typescript": "^4.0.3"
   }
 }

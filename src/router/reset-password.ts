@@ -1,15 +1,17 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { Request, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import BaseUsers from '../users';
+
+interface ResetState {
+  email: string;
+  code: string;
+  expires: string;
+}
 
 declare module 'express-session' {
   interface SessionData {
-    reset: {
-      email: string;
-      code: string;
-      expires: string;
-    };
+    reset: ResetState;
   }
 }
 
@@ -28,17 +30,18 @@ export default function resetPasswordRouter({
 }: ResetPasswordRouterOptions) {
   const router = Router();
 
+  // Always send 200 response regardless of errors
   router.post('/', async (req, res) => {
     const {
       body: { email },
     } = req;
 
     if (!email) {
-      return ERR(res);
+      return SUCCESS(res);
     }
 
     const user = await Users.findByEmail(email);
-    if (!user) return ERR(res);
+    if (!user) return SUCCESS(res);
 
     const expires = new Date();
     expires.setHours(expires.getHours() + 3);
@@ -55,11 +58,10 @@ export default function resetPasswordRouter({
     return SUCCESS(res);
   });
 
-  const authenticate = (req: Request, email: string, code: string) =>
-    !!req.session.reset &&
-    req.session.reset.email === email &&
-    req.session.reset.code === code &&
-    Date.parse(req.session.reset.expires) >= Date.now();
+  const authenticate = (reset: ResetState, email: string, code: string) =>
+    reset.email === email &&
+    reset.code === code &&
+    Date.parse(reset.expires) >= Date.now();
 
   router.get('/verify', async (req, res) => {
     const {
@@ -67,6 +69,7 @@ export default function resetPasswordRouter({
     } = req;
 
     if (
+      !req.session.reset ||
       !email ||
       !code ||
       typeof email !== 'string' ||
@@ -74,7 +77,7 @@ export default function resetPasswordRouter({
     )
       return ERR(res);
 
-    if (authenticate(req, email, code)) return SUCCESS(res);
+    if (authenticate(req.session.reset, email, code)) return SUCCESS(res);
 
     return ERR(res);
   });
@@ -87,9 +90,9 @@ export default function resetPasswordRouter({
     const user = await Users.findByEmail(email);
     if (!user) return ERR(res);
 
-    if (!email || !code || !password) return ERR(res);
+    if (!req.session.reset || !email || !code || !password) return ERR(res);
 
-    if (authenticate(req, email, code)) {
+    if (authenticate(req.session.reset, email, code)) {
       const hash = await bcrypt.hash(password, 10);
       user.password = hash;
       user.provider = 'local';
