@@ -2,86 +2,39 @@
   "name": "@tygr/auth-server",
   "version": "1.0.2",
   "description": "Authentication middleware for tygr",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "files": [
-    "lib"
-  ],
-  "eslintConfig": {
-    "extends": [
-      "alloy",
-      "alloy/typescript"
-    ],
-    "plugins": [
-      "chai-friendly"
-    ],
-    "env": {
-      "node": true,
-      "mocha": true
-    },
-    "rules": {
-      "eol-last": [
-        "error",
-        "always"
-      ],
-      "max-params": [
-        "error",
-        4
-      ],
-      "@typescript-eslint/no-unused-expressions": 0
-    },
-    "ignorePatterns": [
-      "lib/*"
-    ]
-  },
-  "prettier": {
-    "singleQuote": true
-  },
-  "nodemonConfig": {
-    "watch": [
-      "demo",
-      "lib"
-    ],
-    "ext": "ts,js",
-    "exec": "npm run serve",
-    "delay": 1
-  },
-  "mocha": {
-    "spec": "demo/tests/**/*.spec.ts",
-    "require": [
-      "ts-node/register",
-      "dotenv/config"
-    ]
-  },
-  "scripts": {
-    "clean": "rimraf lib",
-    "build": "tsc",
-    "build:w": "npm run build -- -w",
-    "serve": "ts-node -r dotenv/config demo",
-    "serve:w": "nodemon",
-    "start": "npm-run-all build -p build:w serve:w",
-    "test": "cross-env NODE_ENV=test mocha",
-    "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "lint": "npm run lint:fix",
-    "prettier:check": "prettier -c .",
-    "prettier:fix": "prettier --write .",
-    "prettier": "npm run prettier:fix",
-    "quality:check": "run-s --print-label --silent lint:check prettier:check",
-    "quality:fix": "run-p --print-label --silent lint:fix prettier:fix",
-    "quality": "npm run quality:fix"
-  },
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/tylergrinn/tygr-auth-server.git"
   },
+  "author": "Tyler Grinn",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:w": "npm run build -- -w",
+    "clean": "rimraf lib",
+    "lint": "npm run lint:fix",
+    "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "prettier": "npm run prettier:fix",
+    "prettier:check": "prettier -c .",
+    "prettier:fix": "prettier --write .",
+    "quality": "npm run quality:fix",
+    "quality:check": "run-s --print-label --silent lint:check prettier:check",
+    "quality:fix": "run-p --print-label --silent lint:fix prettier:fix",
+    "serve": "ts-node -r dotenv/config demo",
+    "serve:w": "nodemon",
+    "start": "npm-run-all build -p build:w serve:w",
+    "test": "cross-env NODE_ENV=test mocha"
+  },
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "express",
     "login",
     "passport"
   ],
-  "author": "Tyler Grinn",
-  "license": "ISC",
   "peerDependencies": {
     "express": "4"
   },
@@ -128,10 +81,58 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "prettier-plugin-organize-imports": "^1.1.1",
+    "prettier-plugin-package": "^1.3.0",
     "rimraf": "^3.0.2",
     "supertest": "^4.0.2",
     "supertest-session": "^4.1.0",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
+  },
+  "types": "lib/index.d.ts",
+  "eslintConfig": {
+    "extends": [
+      "alloy",
+      "alloy/typescript"
+    ],
+    "plugins": [
+      "chai-friendly"
+    ],
+    "env": {
+      "node": true,
+      "mocha": true
+    },
+    "rules": {
+      "eol-last": [
+        "error",
+        "always"
+      ],
+      "max-params": [
+        "error",
+        4
+      ],
+      "@typescript-eslint/no-unused-expressions": 0
+    },
+    "ignorePatterns": [
+      "lib/*"
+    ]
+  },
+  "mocha": {
+    "spec": "demo/tests/**/*.spec.ts",
+    "require": [
+      "ts-node/register",
+      "dotenv/config"
+    ]
+  },
+  "nodemonConfig": {
+    "watch": [
+      "demo",
+      "lib"
+    ],
+    "ext": "ts,js",
+    "exec": "npm run serve",
+    "delay": 1
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }
