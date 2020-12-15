@@ -1,7 +1,7 @@
 import { Handler, Router } from 'express';
 import { Store } from 'express-session';
 import passport from 'passport';
-import type BaseUsers from '../users';
+import type { BaseUser, BaseUsers } from '../users';
 import initPassport, { Strategy } from './passport';
 import resetPasswordRouter from './reset-password';
 
@@ -11,8 +11,11 @@ declare module 'express-session' {
   }
 }
 
-export interface RouterOptions {
-  Users: BaseUsers;
+export interface RouterOptions<
+  User extends BaseUser = BaseUser,
+  Users extends BaseUsers<User> = BaseUsers<User>
+> {
+  Users: Users;
   sendCode: (email: string, code: string) => Promise<any>;
   store: Store;
   delay: number;

@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { Response, Router } from 'express';
-import BaseUsers from '../users';
+import { BaseUser } from '..';
+import { BaseUsers } from '../users';
 
 interface ResetState {
   email: string;
@@ -15,9 +16,12 @@ declare module 'express-session' {
   }
 }
 
-interface ResetPasswordRouterOptions {
+interface ResetPasswordRouterOptions<
+  User extends BaseUser = BaseUser,
+  Users extends BaseUsers<User> = BaseUsers<User>
+> {
   sendCode: (email: string, code: string) => Promise<any>;
-  Users: BaseUsers;
+  Users: Users;
 }
 
 // Send non-descript messages for all events

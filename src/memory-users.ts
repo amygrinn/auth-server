@@ -1,4 +1,4 @@
-import BaseUsers, { BaseUser } from './users';
+import { BaseUser, BaseUsers } from './users';
 
 const users: BaseUser[] = [];
 

@@ -4,7 +4,7 @@ import envOptions from './env-options';
 import MemoryUsers from './memory-users';
 import middleware, { MiddlewareOptions } from './middleware';
 import router, { RouterOptions } from './router';
-import BaseUsers, { BaseUser } from './users';
+import { BaseUser, BaseUsers } from './users';
 
 export { BaseUsers, BaseUser, MemoryUsers, MemoryStore, cors };
 
@@ -15,21 +15,34 @@ type WithDefaults<Options, Defaults extends Partial<Options>> = Omit<
   Partial<Pick<Options, keyof Pick<Defaults, keyof Options>>>;
 
 const defaultOptions = {
-  Users: MemoryUsers,
   store: new MemoryStore(),
   delay: 0,
 };
 
-type AuthOptions = WithDefaults<
-  MiddlewareOptions & RouterOptions,
-  typeof defaultOptions & typeof envOptions
+type AuthOptions<
+  User extends BaseUser = BaseUser,
+  Users extends BaseUsers<User> = BaseUsers<User>
+> = WithDefaults<
+  MiddlewareOptions & RouterOptions<User, Users>,
+  typeof defaultOptions & typeof envOptions & { Users: Users }
 >;
 
-export default function useAuth(authOptions: AuthOptions) {
+export default function useAuth<
+  User extends BaseUser = BaseUser,
+  Users extends BaseUsers<User> = BaseUsers<User>
+>(authOptions: AuthOptions<User, Users>) {
   const options = { ...defaultOptions, ...authOptions, ...envOptions };
   if (!options.secret)
     throw new Error(
       'Auth requires the secret option to be set either in the options or the `AUTH_SECRET` environment variable'
     );
-  return [middleware(options as MiddlewareOptions), router(options)];
+
+  if (!options.Users) {
+    options.Users = (MemoryUsers as any) as Users;
+  }
+
+  return [
+    middleware(options as MiddlewareOptions),
+    router((options as any) as RouterOptions),
+  ];
 }

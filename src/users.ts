@@ -5,7 +5,7 @@ export interface BaseUser {
   provider: string;
 }
 
-export default interface BaseUsers<User extends BaseUser = BaseUser> {
+export interface BaseUsers<User extends BaseUser = BaseUser> {
   create: (user: User) => Promise<User>;
   findByEmail: (email: string) => Promise<User | null>;
   findAndUpdate: (user: User) => Promise<any>;
