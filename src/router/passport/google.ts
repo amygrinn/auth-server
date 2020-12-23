@@ -32,6 +32,7 @@ export default ({ Users, google, authBaseUrl }: GoogleOptions) =>
         });
       } else if (user.provider !== 'google') {
         user.provider = 'google';
+        user.password = undefined;
         await Users.findAndUpdate(user);
       }
 

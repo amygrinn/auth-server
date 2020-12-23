@@ -65,6 +65,7 @@ export default ({ Users, twitter, authBaseUrl }: TwitterOptions) => {
           provider: 'twitter',
         });
       } else if (user.provider !== 'twitter') {
+        user.password = undefined;
         user.provider = 'twitter';
         await Users.findAndUpdate(user);
       }

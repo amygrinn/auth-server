@@ -37,6 +37,7 @@ export default ({ Users, github, authBaseUrl }: GithubOptions) =>
         });
       } else if (user.provider !== 'github') {
         user.provider = 'github';
+        user.password = undefined;
         await Users.findAndUpdate(user);
       }
 
