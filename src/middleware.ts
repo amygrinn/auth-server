@@ -40,7 +40,7 @@ export default ({ secret, store, cors, httpOnly }: MiddlewareOptions) =>
           ? {
               sameSite: 'none',
               secure: true,
-	            httpOnly,
+              httpOnly,
             }
           : {},
     }),
