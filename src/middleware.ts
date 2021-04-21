@@ -19,11 +19,12 @@ export interface MiddlewareOptions {
   secret: string | string[];
   store: Store;
   cors?: boolean;
+  httpOnly?: boolean;
 }
 
 const TEST = process.env.NODE_ENV === 'test';
 
-export default ({ secret, store, cors }: MiddlewareOptions) =>
+export default ({ secret, store, cors, httpOnly }: MiddlewareOptions) =>
   compose(
     cookieParser(secret),
     session({
@@ -39,6 +40,7 @@ export default ({ secret, store, cors }: MiddlewareOptions) =>
           ? {
               sameSite: 'none',
               secure: true,
+	            httpOnly,
             }
           : {},
     }),

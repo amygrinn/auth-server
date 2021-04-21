@@ -17,6 +17,7 @@ type WithDefaults<Options, Defaults extends Partial<Options>> = Omit<
 const defaultOptions = {
   store: new MemoryStore(),
   delay: 0,
+  httpOnly: true,
 };
 
 type AuthOptions<

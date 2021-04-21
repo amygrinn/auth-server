@@ -2,6 +2,7 @@ const {
   AUTH_SECRET,
   AUTH_DELAY,
   CORS,
+  HTTP_ONLY,
   AUTH_BASE_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
@@ -17,6 +18,7 @@ export default {
   ...(AUTH_SECRET ? { secret: AUTH_SECRET.split(',') } : {}),
   ...(AUTH_DELAY ? { delay: Number(AUTH_DELAY) } : {}),
   ...(CORS ? { cors: !!CORS } : {}),
+  ...(HTTP_ONLY ? { httpOnly: !!HTTP_ONLY } : {}),
   ...(AUTH_BASE_URL ? { authBaseUrl: AUTH_BASE_URL } : {}),
   ...(GOOGLE_CLIENT_ID
     ? {
