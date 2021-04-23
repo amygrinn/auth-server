@@ -43,7 +43,7 @@ export default function init(options: RouterOptions) {
     }
 
     if (options.facebook) {
-      passport.user('facebook', facebook(options as any));
+      passport.use('facebook', facebook(options as any));
     }
   }
 }
