@@ -12,6 +12,7 @@ export default ({ Users, facebook, authBaseUrl }: FacebookOptions) =>
       clientID: facebook.clientID,
       clientSecret: facebook.clientSecret,
       callbackURL: authBaseUrl + '/facebook/callback',
+      profileFields: ['email'].concat(facebook.profileFields || []),
     },
     async (
       _accessToken: string,

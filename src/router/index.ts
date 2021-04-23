@@ -38,6 +38,7 @@ export interface RouterOptions<
     clientID: string;
     clientSecret: string;
     scope?: string[];
+    profileFields?: string[];
   };
 }
 
