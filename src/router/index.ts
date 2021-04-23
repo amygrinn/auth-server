@@ -34,6 +34,11 @@ export interface RouterOptions<
     clientSecret: string;
     scope?: string[];
   };
+  facebook?: {
+    clientID: string;
+    clientSecret: string;
+    scope?: string[];
+  };
 }
 
 const authenticate = (strategy: Strategy, options = {}): Handler => (
@@ -120,6 +125,20 @@ export default (options: RouterOptions) => {
 
     authRouter.get('/twitter/callback', authenticate('twitter'), (req, res) =>
       res.redirect(req.session.originalUrl as string)
+    );
+  }
+
+  if (options.facebook) {
+    const scope = ['email'].concat(options.facebook.scope || []);
+    authRouter.get('/facebook', (req, res, next) => {
+      authenticate('facebook', {
+        scope,
+        state: req.query.redirect,
+      })(req, res, next);
+    });
+
+    authRouter.get('/facebook/callback', authenticate('facebook'), (req, res) =>
+      res.redirect(req.query.state as string)
     );
   }
 

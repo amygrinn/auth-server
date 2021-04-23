@@ -1,5 +1,6 @@
 import passport from 'passport';
 import type { RouterOptions } from '../';
+import facebook from './facebook';
 import github from './github';
 import google from './google';
 import login from './login';
@@ -11,7 +12,8 @@ export type Strategy =
   | 'login-local'
   | 'google'
   | 'twitter'
-  | 'github';
+  | 'github'
+  | 'facebook';
 
 export default function init(options: RouterOptions) {
   const { Users } = options;
@@ -38,6 +40,10 @@ export default function init(options: RouterOptions) {
 
     if (options.twitter) {
       passport.use('twitter', twitter(options as any));
+    }
+
+    if (options.facebook) {
+      passport.user('facebook', facebook(options as any));
     }
   }
 }

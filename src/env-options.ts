@@ -12,6 +12,9 @@ const {
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
   GITHUB_SCOPE,
+  FACEBOOK_CLIENT_ID,
+  FACEBOOK_CLIENT_SECRET,
+  FACEBOOK_SCOPE,
 } = process.env;
 
 export default {
@@ -43,6 +46,15 @@ export default {
           clientID: GITHUB_CLIENT_ID,
           clientSecret: GITHUB_CLIENT_SECRET!,
           scope: GITHUB_SCOPE ? GITHUB_SCOPE.split(',') : [],
+        },
+      }
+    : {}),
+  ...(FACEBOOK_CLIENT_ID
+    ? {
+        facebook: {
+          clientID: FACEBOOK_CLIENT_ID,
+          clientSecret: FACEBOOK_CLIENT_SECRET!,
+          scope: FACEBOOK_SCOPE ? FACEBOOK_SCOPE.split(',') : [],
         },
       }
     : {}),
