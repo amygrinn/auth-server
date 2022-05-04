@@ -7,8 +7,6 @@ const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_SCOPE,
-  TWITTER_CONSUMER_KEY,
-  TWITTER_CONSUMER_SECRET,
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
   GITHUB_SCOPE,
@@ -29,14 +27,6 @@ export default {
           clientID: GOOGLE_CLIENT_ID,
           clientSecret: GOOGLE_CLIENT_SECRET!,
           scope: GOOGLE_SCOPE ? GOOGLE_SCOPE.split(',') : [],
-        },
-      }
-    : {}),
-  ...(TWITTER_CONSUMER_KEY
-    ? {
-        twitter: {
-          consumerKey: TWITTER_CONSUMER_KEY,
-          consumerSecret: TWITTER_CONSUMER_SECRET!,
         },
       }
     : {}),
