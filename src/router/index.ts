@@ -25,10 +25,6 @@ export interface RouterOptions<
     clientSecret: string;
     scope?: string[];
   };
-  twitter?: {
-    consumerKey: string;
-    consumerSecret: string;
-  };
   github?: {
     clientID: string;
     clientSecret: string;
@@ -42,20 +38,18 @@ export interface RouterOptions<
   };
 }
 
-const authenticate = (strategy: Strategy, options = {}): Handler => (
-  req,
-  res,
-  next
-) => {
-  passport.authenticate(strategy, options, (err, user, info) => {
-    if (err) return next(err);
-    if (!user)
-      return res
-        .status(401)
-        .json({ error: info.message || 'Authentication error' });
-    return req.login(user, next);
-  })(req, res, next);
-};
+const authenticate =
+  (strategy: Strategy, options = {}): Handler =>
+  (req, res, next) => {
+    passport.authenticate(strategy, options, (err, user, info) => {
+      if (err) return next(err);
+      if (!user)
+        return res
+          .status(401)
+          .json({ error: info.message || 'Authentication error' });
+      return req.login(user, next);
+    })(req, res, next);
+  };
 
 export default (options: RouterOptions) => {
   const { Users, delay } = options;
@@ -111,21 +105,6 @@ export default (options: RouterOptions) => {
 
     authRouter.get('/github/callback', authenticate('github'), (req, res) =>
       res.redirect(req.query.state as string)
-    );
-  }
-
-  if (options.twitter) {
-    authRouter.get(
-      '/twitter',
-      (req, _res, next) => {
-        req.session.originalUrl = req.query.redirect as string;
-        req.session.save(next);
-      },
-      authenticate('twitter')
-    );
-
-    authRouter.get('/twitter/callback', authenticate('twitter'), (req, res) =>
-      res.redirect(req.session.originalUrl as string)
     );
   }
 

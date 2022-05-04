@@ -39,11 +39,11 @@ export default function useAuth<
     );
 
   if (!options.Users) {
-    options.Users = (MemoryUsers as any) as Users;
+    options.Users = MemoryUsers as any as Users;
   }
 
   return [
     middleware(options as MiddlewareOptions),
-    router((options as any) as RouterOptions),
+    router(options as any as RouterOptions),
   ];
 }
