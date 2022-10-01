@@ -74,8 +74,13 @@ export default (options: RouterOptions) => {
   authRouter.get('/verify', sendUser);
 
   authRouter.put('/logout', (req, res) => {
-    req.logout();
-    return res.json({ success: true });
+    req.logout((err) => {
+      if (err) {
+        res.json({ success: false });
+      } else {
+        res.json({ success: true });
+      }
+    });
   });
 
   authRouter.use('/reset-password', resetPasswordRouter(options));
@@ -125,8 +130,13 @@ export default (options: RouterOptions) => {
   authRouter.route('/user').delete(async (req, res) => {
     if (!req.user) return res.status(401).json({ error: 'Not logged in' });
     await Users.findAndDestroy(req.user as any);
-    req.logout();
-    return res.json({ success: true });
+    return req.logout((err) => {
+      if (err) {
+        res.json({ success: false });
+      } else {
+        res.json({ success: true });
+      }
+    });
   });
 
   return authRouter;
