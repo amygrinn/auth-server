@@ -1,4 +1,4 @@
-# This package has moved to [@taylorgrinn/auth-server](https://github.com/taylogrinn/auth-server)
+# This package has moved to [@taylorgrinn/auth-server](https://github.com/taylorgrinn/auth-server)
 
 # Tygr Auth Server Middleware
 
