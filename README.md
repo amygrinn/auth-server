@@ -1,3 +1,5 @@
+# This package has moved to [@taylorgrinn/auth-server](https://github.com/taylogrinn/auth-server)
+
 # Tygr Auth Server Middleware
 
 This is an express middleware and router to be used with the [@tygr/auth](https://github.com/tylergrinn/tygr-auth.git) react component.
