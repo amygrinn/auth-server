@@ -13,7 +13,7 @@ deploy:
     on:
       branch: main
       tags: true
-      repo: tylergrinn/tygr-auth-server
+      repo: taylorgrinn/tygr-auth-server
     edge: true
-    email: tylergrinn@gmail.com
+    email: grinntaylor+old@gmail.com
     api_token: $NPM_TOKEN
