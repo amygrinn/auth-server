@@ -13,7 +13,8 @@ deploy:
     on:
       branch: main
       tags: true
-      repo: taylorgrinn/tygr-auth-server
-    edge: true
-    email: grinntaylor+old@gmail.com
-    api_token: $NPM_TOKEN
+      repo: taylorgrinn/auth-server
+    email: grinntaylor@gmail.com
+    skip_cleanup: true
+    api_key:
+      secure: 'oLxgbd2tsC9vZpl27yinR1JiZ8wgU8Vo9LYIeHT+RhLTgg7C4Nr8GhaiZ2w9GPonma8vkMEkbFiCb1PppUqCC1871ocPX30Q6Om0L50wDIjUQyvJgMBuPgmi+51+7LsPt2dmzXidjKSRLKIZvWBiMHOWsyPEng/zQ0P8n2llLvAcuAWnEjIeynleyK6vdCj0IAnUWdEJXa+4uoa/8Q/q4myvX5LbGsN/z46pf1OnwwoJYDfUeYUHm6EZGchJD3480WnAs1T23C07FyXTPzoiCEdLnzYVzUzxOhPZSOgv5nF8fXxAbxGp8izzVMmCgCEvRyxR4EHVGCXVtHHpZje5KmX7B92ru7WNkWYGMeQWuCL9vtmzldT2qBwhartMbhsgjrv43YDqwFPzfXWMHaNOWZZYMt63J38QCya+F4aM0FdLLNOHnSMaYzEyTxj7WXda4bTNezIzlabkm1OaNo8BNuqg5dpx3IN3/gZHJ1Ksmo9cy/BrGkXzK0/db0TQDyt5B86rzyhLpUbGGaHH2Kp84bAOw4PXQ31LOhQmq7KbykNj731yjzkkJOcixQ7Z8yByBwhmgLy8RFIfwiqyuEMKWAwWU0s7ZtjSKCx28uG5GU69Q9soGusC/88vRZtzqnT9ZWZ+mF279deR5I1vrRpHUGbW7Vzs6DQQVjK8R2KSYQE='

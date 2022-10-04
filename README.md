@@ -1,14 +1,14 @@
-# This package has moved to [@taylorgrinn/auth-server](https://github.com/taylorgrinn/auth-server)
+# Tay Auth Server Middleware
 
-# Tygr Auth Server Middleware
-
-This is an express middleware and router to be used with the [@tygr/auth](https://github.com/tylergrinn/tygr-auth.git) react component.
+This is an express middleware and router to be used with the
+[@taylorgrinn/auth](https://github.com/taylorgrinn/auth.git) react
+component.
 
 # Installation
 
 ```cmd
-npm i --save @tygr/auth-server
-yarn add @tygr/auth-server
+npm i --save @taylorgrinn/auth-server
+yarn add @taylorgrinn/auth-server
 ```
 
 # Add the middleware and router to your app
@@ -16,7 +16,7 @@ yarn add @tygr/auth-server
 ```js
 import bodyParser from 'body-parser';
 import express from 'express';
-import useAuth from '@tygr/auth-server';
+import useAuth from '@taylorgrinn/auth-server';
 
 const [authMiddleware, authRouter] = useAuth({
   // Provide a secret key or list of keys to use for creating sessions.
@@ -84,9 +84,11 @@ const [authMiddleware, authRouter] = useAuth({
 app.use('/auth', authRouter)
 ```
 
-For the `scope` options, the `email` scope is already included in all authentication requests by default for both github and google.
+For the `scope` options, the `email` scope is already included in all
+authentication requests by default for both github and google.
 
-When creating the keys for each provider, you'll also have to specify the callback urls in this format:
+When creating the keys for each provider, you'll also have to specify
+the callback urls in this format:
 
 - Google: `` `${authBaseUrl}/google/callback` ``
 - Github: `` `${authBaseUrl}/github/callback` ``
@@ -94,11 +96,19 @@ When creating the keys for each provider, you'll also have to specify the callba
 
 # Setup better storage options
 
-By default, the sessions and user data are stored in-memory. This is volatile and not recommended for production use. You may pass in a `store` for the sessions and a `Users` model for storing users.
+By default, the sessions and user data are stored in-memory. This is
+volatile and not recommended for production use. You may pass in a
+`store` for the sessions and a `Users` model for storing users.
 
-The `store` interface is [described here](https://github.com/expressjs/session#session-store-implementation) in the express-session library.
+The `store` interface is [described
+here](https://github.com/expressjs/session#session-store-implementation)
+in the express-session library.
 
-The `Users` interface defines what will probably be static methods on your `Users`' model class. I designed it specifically to work with sequelize right out of the gate, but it can be adapted for any storage mechanism you'd like. There are five methods to implement and four required fields on the User object.
+The `Users` interface defines what will probably be static methods on
+your `Users`' model class. I designed it specifically to work with
+sequelize right out of the gate, but it can be adapted for any storage
+mechanism you'd like. There are five methods to implement and four
+required fields on the User object.
 
 ---
 
@@ -149,10 +159,13 @@ The `Users` interface defines what will probably be static methods on your `User
 
 # Setup cors for cross-domain authentication
 
-If your authentication server is on a different domain than your client, or you have multiple clients logging in to the same authentication server, you can use the `cors` middleware and the `cors` option:
+If your authentication server is on a different domain than your
+client, or you have multiple clients logging in to the same
+authentication server, you can use the `cors` middleware and the
+`cors` option:
 
 ```js
-import useAuth, { cors } from '@tygr/auth-server';
+import useAuth, { cors } from '@taylorgrinn/auth-server';
 
 
 const [authMiddleware, authRouter] = useAuth({
@@ -160,18 +173,25 @@ const [authMiddleware, authRouter] = useAuth({
   cors: true,
 });
 
-app.use(cors('https://tygr.info', 'http://localhost:8081'));
+app.use(cors('https://taydev.org', 'http://localhost:8081'));
 ```
 
-The `cors` middleware takes in any number of whitelisted domains and adds the relevant headers to all requests from each of them.
+The `cors` middleware takes in any number of whitelisted domains and
+adds the relevant headers to all requests from each of them.
 
-The `cors` option changes the way cookies are set. Specifically, it makes them available on any domain and makes them `secure`, only available when the authentication server is served over https. Check out the `demo` folder to see an example of serving `https://localhost` with a self-signed certificate.
+The `cors` option changes the way cookies are set. Specifically, it
+makes them available on any domain and makes them `secure`, only
+available when the authentication server is served over https. Check
+out the `demo` folder to see an example of serving `https://localhost`
+with a self-signed certificate.
 
-If the `CORS` environment variable is set, the cors options will be set to true and the whitelist will be set to the comma-separated list value of the `CORS` environment variable:
+If the `CORS` environment variable is set, the cors options will be
+set to true and the whitelist will be set to the comma-separated list
+value of the `CORS` environment variable:
 
 ```sh
 # .env file (or however you set env vars)
-CORS=https://tygr.info,http://localhost:8081
+CORS=https://taydev.org,http://localhost:8081
 ```
 
 ```js

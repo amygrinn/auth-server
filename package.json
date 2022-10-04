@@ -1,13 +1,13 @@
 {
-  "name": "@tygr/auth-server",
-  "version": "2.0.3",
-  "description": "Authentication middleware for tygr",
+  "name": "@taylorgrinn/auth-server",
+  "version": "3.0.0",
+  "description": "Authentication middleware for Taylor",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tylergrinn/tygr-auth-server.git"
+    "url": "https://github.com/taylorgrinn/auth-server.git"
   },
-  "author": "Tyler Grinn",
+  "author": "Taylor Grinn",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
