@@ -20,7 +20,7 @@ const defaultOptions = {
   httpOnly: true,
 };
 
-type AuthOptions<
+export type AuthOptions<
   User extends BaseUser = BaseUser,
   Users extends BaseUsers<User> = BaseUsers<User>
 > = WithDefaults<

@@ -1,6 +1,6 @@
 {
   "name": "@taylorgrinn/auth-server",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Authentication middleware for Taylor",
   "license": "ISC",
   "repository": {
