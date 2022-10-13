@@ -1,4 +1,4 @@
-import { Handler, Router } from 'express';
+import { Handler, Request, Router } from 'express';
 import { Store } from 'express-session';
 import passport from 'passport';
 import type { BaseUser, BaseUsers } from '../users';
@@ -52,7 +52,7 @@ const authenticate =
   };
 
 export default (options: RouterOptions) => {
-  const { Users, delay } = options;
+  const { Users, delay, authBaseUrl } = options;
   initPassport(options);
 
   const authRouter = Router();
@@ -61,6 +61,18 @@ export default (options: RouterOptions) => {
   authRouter.use((_req, _res, next) => {
     setTimeout(next, delay);
   });
+
+  const getCallbackURL = (provider: string, req: Request) => {
+    let baseCallback = `${authBaseUrl}/${provider}/callback`;
+    if (!authBaseUrl) return '';
+    try {
+      // eslint-disable-next-line no-new
+      new URL(baseCallback);
+      return baseCallback;
+    } catch (err) {
+      return req.protocol + '://' + req.hostname + baseCallback;
+    }
+  };
 
   const sendUser: Handler = (req, res) => {
     if (req.user) return res.json(Users.sanitize(req.user as any));
@@ -74,13 +86,7 @@ export default (options: RouterOptions) => {
   authRouter.get('/verify', sendUser);
 
   authRouter.put('/logout', (req, res) => {
-    req.logout((err) => {
-      if (err) {
-        res.json({ success: false });
-      } else {
-        res.json({ success: true });
-      }
-    });
+    req.logout((err) => res.json({ success: !err }));
   });
 
   authRouter.use('/reset-password', resetPasswordRouter(options));
@@ -91,6 +97,7 @@ export default (options: RouterOptions) => {
       authenticate('google', {
         scope,
         state: req.query.redirect,
+        callbackURL: getCallbackURL('google', req),
       })(req, res, next);
     });
 
@@ -105,6 +112,7 @@ export default (options: RouterOptions) => {
       authenticate('github', {
         scope,
         state: req.query.redirect,
+        callbackURL: getCallbackURL('github', req),
       })(req, res, next);
     });
 
@@ -119,6 +127,7 @@ export default (options: RouterOptions) => {
       authenticate('facebook', {
         scope,
         state: req.query.redirect,
+        callbackURL: getCallbackURL('facebook', req),
       })(req, res, next);
     });
 
